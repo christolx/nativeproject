@@ -112,7 +112,7 @@ const HomePage = () => {
                 contentContainerStyle={styles.listContainer}
             />
 
-            {/* minigame */}
+            {/* minigame button*/}
             <TouchableOpacity style={styles.floatingButton}
             onPress={()=>router.push('Minigame')}>
                 <FontAwesome5 name="gamepad" size={24} color="white" />

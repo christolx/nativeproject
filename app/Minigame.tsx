@@ -11,9 +11,9 @@ const Minigame = () => {
     const router = useRouter();
 
     const prizes = [
-        { name: 'Bronze Coin', value: 10, image: require('../assets/bronze-coin.png') },
-        { name: 'Silver Coin', value: 50, image: require('../assets/silver-coin.png') },
         { name: 'Gold Coin', value: 100, image: require('../assets/gold-coin.png') },
+        { name: 'Silver Coin', value: 50, image: require('../assets/silver-coin.png') },
+        { name: 'Bronze Coin', value: 10, image: require('../assets/bronze-coin.png') },
     ];
 
     const handleEggClick = () => {
@@ -30,22 +30,21 @@ const Minigame = () => {
 
     return (
         <View style={styles.container}>
+            <View style={styles.prizesContainer}>
+                {prizes.map((item, index) => (
+                    <View key={index} style={styles.prize}>
+                        <Image source={item.image} style={styles.coinImage} />
+                        <Text>{item.value}</Text>
+                    </View>
+                ))}
+            </View>
             {!isEggCracked ? (
                 <View style={styles.gameContainer}>
-                    <View style={styles.prizesContainer}>
-                        {prizes.map((item, index) => (
-                            <View key={index} style={styles.prize}>
-                                <Image source={item.image} style={styles.coinImage} />
-                                <Text>{item.value}</Text>
-                            </View>
-                        ))}
-                    </View>
-
                     <Text style={styles.instructionText}>
                         Click on the egg to get your prize!
                     </Text>
 
-                    <TouchableOpacity onPress={handleEggClick}>
+                    <TouchableOpacity onPress={handleEggClick} >
                         <Image
                             source={require('../assets/egg-full.png')}
                             style={styles.eggImage}
@@ -59,16 +58,20 @@ const Minigame = () => {
                         style={styles.eggImage}
                     />
                     <Text style={styles.congratulationsText}>
-                        Congratulations! You got a {prize.name}!
+                        Congratulations!
+                    </Text>
+                    <Text style={{marginBottom: 10, marginTop : 0}}>
+                        You got a {prize.name}!
                     </Text>
                     <Image source={prize.image} style={styles.coinImage} />
                     <Text style={styles.coinValueText}>
                         {prize.value} coins have been added to your balance
                     </Text>
 
-                    <TouchableOpacity style={styles.backButton} onPress={resetGame}>
-                        <Text style={styles.backButtonText}>Play Again</Text>
+                    <TouchableOpacity style={styles.playAgainBtn} onPress={resetGame}>
+                        <Text style={styles.playAgainTxt}>Play Again</Text>
                     </TouchableOpacity>
+
                 </View>
             )}
         </View>
@@ -81,16 +84,6 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#f8f8f8',
     },
-    backButton: {
-        alignSelf: 'flex-start',
-        padding: 10,
-        borderRadius: 10,
-        backgroundColor: '#6b5b95',
-    },
-    backButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
     gameContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -98,8 +91,7 @@ const styles = StyleSheet.create({
     },
     prizesContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginBottom: 20,
+        justifyContent: 'center',
     },
     prize: {
         alignItems: 'center',
@@ -114,8 +106,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     eggImage: {
-        width: 150,
-        height: 150,
+        marginBottom: 5,
     },
     resultContainer: {
         flex: 1,
@@ -126,11 +117,23 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginVertical: 10,
+        textAlign: 'center'
     },
     coinValueText: {
         fontSize: 16,
         marginTop: 10,
+        fontWeight : 'bold',
     },
+    playAgainBtn: {
+        marginTop : 25,
+        backgroundColor: 'lightblue',
+        width : 100,
+        height : 50,
+        justifyContent: 'center',
+    },
+    playAgainTxt : {
+        textAlign: 'center',
+    }
 });
 
 export default Minigame;
