@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import {View, Text, FlatList, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useSelector} from 'react-redux';
+import {useRouter} from 'expo-router';
 
 const MyProducts = () => {
     const ownedProducts = useSelector((state) => state.coins.ownedProducts);
+    const router = useRouter();
 
     return (
         <View style={styles.container}>
@@ -11,11 +13,17 @@ const MyProducts = () => {
             <FlatList
                 data={ownedProducts}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.productItem}>
-                        <Image source={{ uri: item.image }} style={styles.productImage} />
+                renderItem={({item}) => (
+                    <TouchableOpacity
+                        style={styles.productItem}
+                        onPress={() => router.push({
+                            pathname: 'ProductDetails',
+                            params: {product: JSON.stringify(item)}
+                        })}
+                    >
+                        <Image source={{uri: item.image}} style={styles.productImage}/>
                         <Text style={styles.productTitle}>{item.title}</Text>
-                    </View>
+                    </TouchableOpacity>
                 )}
             />
         </View>
@@ -37,6 +45,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 15,
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 10,
+        elevation: 2,
     },
     productImage: {
         width: 50,
@@ -45,6 +57,8 @@ const styles = StyleSheet.create({
     },
     productTitle: {
         fontSize: 16,
+        flex: 1,
+        flexWrap: 'wrap',
     },
 });
 

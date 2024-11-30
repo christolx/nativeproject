@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image,} from 'react-native';
 import {MaterialIcons, FontAwesome5} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
-import { useSelector, useDispatch } from 'react-redux';
-import { addCoins, subtractCoins } from '../src/coinsSlice';
+import {useSelector, useDispatch} from 'react-redux';
+import {addCoins, resetCoins, subtractCoins} from '../src/coinsSlice';
+import SearchIcon from "@/assets/SearchIcon";
 
 const HomePage = () => {
 
@@ -30,7 +31,6 @@ const HomePage = () => {
         fetchProducts();
     }, []);
 
-
     const handleSearch = (text) => {
         setSearchQuery(text);
         const filtered = products.filter((product) =>
@@ -51,6 +51,7 @@ const HomePage = () => {
         >
             <Image source={{uri: item.image}} style={styles.productImage}/>
             <Text style={styles.productTitle}>{item.title}</Text>
+            <Text style={styles.productID}>Product ID : {item.id}</Text>
             <Text style={styles.productPrice}>${item.price}</Text>
         </TouchableOpacity>
     );
@@ -59,13 +60,15 @@ const HomePage = () => {
         <View style={styles.container}>
             {/* header */}
             <View style={styles.header}>
-                <TextInput
-                    placeholder="Search Product..."
-                    value={searchQuery}
-                    onChangeText={handleSearch}
-                    style={styles.searchInput}
-                />
-
+                <View style={styles.searchContainer}>
+                    <SearchIcon style={styles.searchIcon} />
+                    <TextInput
+                        placeholder="Search Product..."
+                        value={searchQuery}
+                        onChangeText={handleSearch}
+                        style={styles.searchInput}
+                    />
+                </View>
                 <TouchableOpacity
                     style={styles.myProductsButton}
                     onPress={() => router.push('MyProducts')}
@@ -75,9 +78,17 @@ const HomePage = () => {
 
                 <View style={styles.coinBalance}>
                     <Text style={styles.coinText}>{coinsBalance}</Text>
-                    <FontAwesome5 name="money-bill" size={16} color="gold"/>
+                    <FontAwesome5 name="money-bill" size={16} color="gold" />
                 </View>
             </View>
+
+            {/* tombol reset coins */}
+            <TouchableOpacity
+                style={styles.resetButton}
+                onPress={() => dispatch(resetCoins())}
+            >
+                <Text style={styles.resetButtonText}>Reset Coins</Text>
+            </TouchableOpacity>
 
             {/* ganti list & grid */}
             <View style={styles.toggleView}>
@@ -101,9 +112,10 @@ const HomePage = () => {
                 contentContainerStyle={styles.listContainer}
             />
 
-            {/* floating button */}
-            <TouchableOpacity style={styles.floatingButton}>
-                <FontAwesome5 name="gamepad" size={24} color="white"/>
+            {/* minigame */}
+            <TouchableOpacity style={styles.floatingButton}
+            onPress={()=>router.push('Minigame')}>
+                <FontAwesome5 name="gamepad" size={24} color="white" />
             </TouchableOpacity>
         </View>
     );
@@ -118,16 +130,30 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 15,
+        marginBottom: 10,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        position: 'relative',
+    },
+    searchIcon: {
+        position: 'absolute',
+        left: 0,
+        zIndex: 1,
+        width : 45,
+        height: 20,
     },
     searchInput: {
         flex: 1,
         height: 40,
         backgroundColor: '#fff',
         borderRadius: 20,
-        paddingHorizontal: 15,
+        paddingLeft: 40,
+        paddingRight: 15,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
         elevation: 2,
@@ -197,6 +223,23 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         elevation: 5,
+    },
+    resetButton: {
+        marginLeft: 10,
+        backgroundColor: 'red',
+        padding: 10,
+        borderRadius: 20,
+        marginBottom: 10
+    },
+    resetButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
+    productID: {
+        fontSize: 12,
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
 });
 

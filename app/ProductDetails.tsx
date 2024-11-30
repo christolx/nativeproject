@@ -1,35 +1,52 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { subtractCoins, addProduct } from '../src/coinsSlice';
+import {View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {useLocalSearchParams} from 'expo-router';
+import {useDispatch, useSelector} from 'react-redux';
+import {subtractCoins, addProduct, removeProduct, addCoins} from '../src/coinsSlice';
 
 const ProductDetails = () => {
-    const { product } = useLocalSearchParams();
+    const {product} = useLocalSearchParams();
     const parsedProduct = JSON.parse(product);
     const dispatch = useDispatch();
     const coinsBalance = useSelector((state) => state.coins.balance);
+    const ownedProducts = useSelector((state) => state.coins.ownedProducts);
+
+    const isOwned = ownedProducts.some((p) => p.id === parsedProduct.id);
 
     const handleBuyProduct = () => {
         if (coinsBalance >= parsedProduct.price) {
             dispatch(subtractCoins(parsedProduct.price));
             dispatch(addProduct(parsedProduct));
-            Alert.alert('Purchase Successful', 'The product has been added to your collection.');
+            Alert.alert('Success!', `Product ${parsedProduct.id} was bought successfully!\nYour current balance is ${coinsBalance - parsedProduct.price}.`);
+            // Adapt to asynchronous state update
         } else {
-            Alert.alert('Insufficient Coins', 'You do not have enough coins to buy this product.');
+            Alert.alert('Fail : Insufficient Coins.', 'You do not have enough coins to buy this product.');
         }
+    };
+
+    const handleSellProduct = () => {
+        dispatch(removeProduct(parsedProduct.id));
+        dispatch(addCoins(parsedProduct.price));
+        Alert.alert('Success!', `Product ${parsedProduct.id} was sold successfully!\nYour current balance is ${coinsBalance + parsedProduct.price}`);
+        // Adapt to asynchronous state update
     };
 
     return (
         <View style={styles.container}>
-            <Image source={{ uri: parsedProduct.image }} style={styles.productImage} />
+            <Image source={{uri: parsedProduct.image}} style={styles.productImage}/>
             <Text style={styles.productTitle}>{parsedProduct.title}</Text>
             <Text style={styles.productID}>Product ID : {parsedProduct.id}</Text>
             <Text style={styles.productPrice}>${parsedProduct.price}</Text>
             <Text style={styles.productDescription}>{parsedProduct.description}</Text>
-            <TouchableOpacity onPress={handleBuyProduct} style={{ justifyContent: 'flex-end', flexGrow: 1 }}>
-                <Text style={styles.btn}>Buy</Text>
-            </TouchableOpacity>
+            {isOwned ? (
+                <TouchableOpacity onPress={handleSellProduct} style={{justifyContent: 'flex-end', flexGrow: 1}}>
+                    <Text style={[styles.btn, styles.sellBtn]}>Sell</Text>
+                </TouchableOpacity>
+            ) : (
+                <TouchableOpacity onPress={handleBuyProduct} style={{justifyContent: 'flex-end', flexGrow: 1}}>
+                    <Text style={styles.btn}>Buy</Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 };
@@ -53,7 +70,7 @@ const styles = StyleSheet.create({
     productID: {
         fontSize: 12,
         fontWeight: 'bold',
-        marginBottom: 10
+        marginBottom: 10,
     },
     productPrice: {
         fontSize: 20,
@@ -65,12 +82,16 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     btn: {
-        fontSize : 30,
-        backgroundColor : '#8775a9',
+        fontSize: 30,
+        backgroundColor: '#8775a9',
         textAlign: 'center',
-        color : 'white',
-        borderRadius : 10
-    }
+        color: 'white',
+        borderRadius: 10,
+        paddingVertical: 10,
+    },
+    sellBtn: {
+        backgroundColor: '#f76c6c',
+    },
 });
 
 export default ProductDetails;

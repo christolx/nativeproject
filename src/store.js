@@ -1,6 +1,6 @@
 // store.js
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
+import {configureStore} from '@reduxjs/toolkit';
+import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import coinsReducer from './coinsSlice';
 
@@ -15,6 +15,7 @@ export const store = configureStore({
     reducer: {
         coins: persistedReducer,
     },
+    // Ignore Warns (gak tau kenapa warn terus)
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
