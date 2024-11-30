@@ -20,7 +20,7 @@ const ProductDetails = () => {
             Alert.alert('Success!', `Product ${parsedProduct.id} was bought successfully!\nYour current balance is ${coinsBalance - parsedProduct.price}.`);
             // Adapt to asynchronous state update
         } else {
-            Alert.alert('Fail : Insufficient Coins.', 'You do not have enough coins to buy this product.');
+            Alert.alert('Failed! Insufficient Coins.', 'You do not have enough coins to buy this product.');
         }
     };
 

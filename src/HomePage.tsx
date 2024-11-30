@@ -16,7 +16,6 @@ const HomePage = () => {
     const [isGridView, setIsGridView] = useState(false);
     const router = useRouter();
 
-
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -140,10 +139,8 @@ const styles = StyleSheet.create({
     },
     searchIcon: {
         position: 'absolute',
-        left: 0,
+        left: 5,
         zIndex: 1,
-        width : 45,
-        height: 20,
     },
     searchInput: {
         flex: 1,
