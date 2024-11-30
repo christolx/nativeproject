@@ -1,10 +1,24 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams } from 'expo-router'; // Import useLocalSearchParams
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { subtractCoins, addProduct } from '../src/coinsSlice';
 
 const ProductDetails = () => {
-    const { product } = useLocalSearchParams(); // Get the product data passed from HomePage
-    const parsedProduct = JSON.parse(product); // Parse the product string back to an object
+    const { product } = useLocalSearchParams();
+    const parsedProduct = JSON.parse(product);
+    const dispatch = useDispatch();
+    const coinsBalance = useSelector((state) => state.coins.balance);
+
+    const handleBuyProduct = () => {
+        if (coinsBalance >= parsedProduct.price) {
+            dispatch(subtractCoins(parsedProduct.price));
+            dispatch(addProduct(parsedProduct));
+            Alert.alert('Purchase Successful', 'The product has been added to your collection.');
+        } else {
+            Alert.alert('Insufficient Coins', 'You do not have enough coins to buy this product.');
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -13,7 +27,7 @@ const ProductDetails = () => {
             <Text style={styles.productID}>Product ID : {parsedProduct.id}</Text>
             <Text style={styles.productPrice}>${parsedProduct.price}</Text>
             <Text style={styles.productDescription}>{parsedProduct.description}</Text>
-            <TouchableOpacity style={{justifyContent:'flex-end' ,flexGrow:1}}>
+            <TouchableOpacity onPress={handleBuyProduct} style={{ justifyContent: 'flex-end', flexGrow: 1 }}>
                 <Text style={styles.btn}>Buy</Text>
             </TouchableOpacity>
         </View>

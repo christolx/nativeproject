@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image,} from 'react-native';
 import {MaterialIcons, FontAwesome5} from '@expo/vector-icons';
-import {useRouter} from 'expo-router'; //
+import {useRouter} from 'expo-router';
+import { useSelector, useDispatch } from 'react-redux';
+import { addCoins, subtractCoins } from '../src/coinsSlice';
 
 const HomePage = () => {
+
+    const dispatch = useDispatch();
+    const coinsBalance = useSelector((state) => state.coins.balance);
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -60,11 +65,16 @@ const HomePage = () => {
                     onChangeText={handleSearch}
                     style={styles.searchInput}
                 />
-                <TouchableOpacity style={styles.myProductsButton}>
+
+                <TouchableOpacity
+                    style={styles.myProductsButton}
+                    onPress={() => router.push('MyProducts')}
+                >
                     <Text style={styles.myProductsButtonText}>My Products</Text>
                 </TouchableOpacity>
+
                 <View style={styles.coinBalance}>
-                    <Text style={styles.coinText}>500</Text>
+                    <Text style={styles.coinText}>{coinsBalance}</Text>
                     <FontAwesome5 name="money-bill" size={16} color="gold"/>
                 </View>
             </View>
