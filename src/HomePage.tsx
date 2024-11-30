@@ -1,29 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    FlatList,
-    TouchableOpacity,
-    StyleSheet,
-    Image,
-} from 'react-native';
-import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
+import React, {useEffect, useState} from 'react';
+import {View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image,} from 'react-native';
+import {MaterialIcons, FontAwesome5} from '@expo/vector-icons';
+import {useRouter} from 'expo-router'; //
 
 const HomePage = () => {
-    const [products, setProducts] = useState([]); // Original product list
-    const [filteredProducts, setFilteredProducts] = useState([]); // Filtered products for search
-    const [searchQuery, setSearchQuery] = useState(''); // Search query
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [isGridView, setIsGridView] = useState(false);
+    const router = useRouter();
 
-    // Fetch product data from API
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const response = await fetch('https://fakestoreapi.com/products');
                 const data = await response.json();
                 setProducts(data);
-                setFilteredProducts(data); // Initially, show all products
+                setFilteredProducts(data);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
@@ -31,7 +25,7 @@ const HomePage = () => {
         fetchProducts();
     }, []);
 
-    // Handle search input
+
     const handleSearch = (text) => {
         setSearchQuery(text);
         const filtered = products.filter((product) =>
@@ -42,11 +36,15 @@ const HomePage = () => {
 
     const toggleView = () => setIsGridView(!isGridView);
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({item}) => (
         <TouchableOpacity
             style={[styles.itemContainer, isGridView && styles.gridItem]}
+            onPress={() => router.push({
+                pathname: 'ProductDetails',
+                params: {product: JSON.stringify(item)}
+            })}
         >
-            <Image source={{ uri: item.image }} style={styles.productImage} />
+            <Image source={{uri: item.image}} style={styles.productImage}/>
             <Text style={styles.productTitle}>{item.title}</Text>
             <Text style={styles.productPrice}>${item.price}</Text>
         </TouchableOpacity>
@@ -54,7 +52,7 @@ const HomePage = () => {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
+            {/* header */}
             <View style={styles.header}>
                 <TextInput
                     placeholder="Search Product..."
@@ -67,11 +65,11 @@ const HomePage = () => {
                 </TouchableOpacity>
                 <View style={styles.coinBalance}>
                     <Text style={styles.coinText}>500</Text>
-                    <FontAwesome5 name="money-bill" size={16} color="gold" />
+                    <FontAwesome5 name="money-bill" size={16} color="gold"/>
                 </View>
             </View>
 
-            {/* Toggle View */}
+            {/* ganti list & grid */}
             <View style={styles.toggleView}>
                 <Text style={styles.availableProductsText}>Available Products</Text>
                 <TouchableOpacity onPress={toggleView}>
@@ -83,7 +81,7 @@ const HomePage = () => {
                 </TouchableOpacity>
             </View>
 
-            {/* Product List */}
+            {/* product list */}
             <FlatList
                 key={isGridView ? 'grid' : 'list'}
                 data={filteredProducts}
@@ -93,9 +91,9 @@ const HomePage = () => {
                 contentContainerStyle={styles.listContainer}
             />
 
-            {/* Floating Action Button */}
+            {/* floating button */}
             <TouchableOpacity style={styles.floatingButton}>
-                <FontAwesome5 name="gamepad" size={24} color="white" />
+                <FontAwesome5 name="gamepad" size={24} color="white"/>
             </TouchableOpacity>
         </View>
     );
@@ -119,7 +117,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingHorizontal: 15,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.1,
         shadowRadius: 2,
         elevation: 2,
@@ -135,13 +133,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     coinBalance: {
-        marginLeft: 10,
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: 10,
     },
     coinText: {
-        fontSize: 16,
-        color: '#6b5b95',
+        fontSize: 18,
         marginRight: 5,
     },
     toggleView: {
@@ -153,56 +150,42 @@ const styles = StyleSheet.create({
     availableProductsText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#333',
     },
     listContainer: {
         paddingBottom: 20,
     },
     itemContainer: {
-        flexDirection: 'column', // Changed to column to stack title and price
-        alignItems: 'center',
-        marginBottom: 10,
-        padding: 10,
         backgroundColor: '#fff',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ddd',
+        borderRadius: 10,
+        margin: 5,
+        padding: 10,
+        elevation: 3,
+        flex: 1,
     },
     gridItem: {
-        flex: 1,
-        margin: 5,
-        flexDirection: 'column',
-        alignItems: 'center',
+        flex: 0.5,
     },
     productImage: {
-        width: 50,
-        height: 50,
+        width: '100%',
+        height: 150,
+        resizeMode: 'contain',
         marginBottom: 10,
     },
     productTitle: {
         fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
     },
     productPrice: {
         fontSize: 14,
         color: '#888',
-        textAlign: 'center',
     },
     floatingButton: {
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: '#6b5b95',
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
+        backgroundColor: '#ff6347',
+        borderRadius: 50,
+        padding: 15,
         elevation: 5,
     },
 });

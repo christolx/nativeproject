@@ -1,8 +1,8 @@
-import React from 'react';
+// app/index.tsx
 import HomePage from '../src/HomePage';
 
-const App = () => {
+const IndexPage = () => {
     return <HomePage />;
 };
 
-export default App;
+export default IndexPage;
